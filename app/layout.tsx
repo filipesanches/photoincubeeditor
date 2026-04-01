@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] });
 const dancingScript = Dancing_Script({ subsets: ['latin'], variable: '--font-cursive' });
 
 export const metadata: Metadata = {
-  title: 'Polaroid Studio',
+  title: 'Photo in Cube',
   description: 'Crie e salve suas fotos no formato Polaroid em PDF',
 };
 
