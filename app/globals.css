@@ -38,6 +38,30 @@
   font-family: var(--font-cursive), cursive;
 }
 
+.font-caveat {
+  font-family: var(--font-caveat), cursive;
+}
+
+.font-pacifico {
+  font-family: var(--font-pacifico), cursive;
+}
+
+.font-mono {
+  font-family: var(--font-mono), monospace;
+}
+
+.font-serif {
+  font-family: var(--font-serif), serif;
+}
+
+.font-montserrat {
+  font-family: var(--font-montserrat), sans-serif;
+}
+
+.font-sans {
+  font-family: var(--font-sans), sans-serif;
+}
+
 .print-only {
   display: none;
 }

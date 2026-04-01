@@ -21,7 +21,8 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
-  ChevronDown
+  ChevronDown,
+  Italic
 } from 'lucide-react';
 
 // --- Types ---
@@ -41,6 +42,7 @@ interface PolaroidPhoto {
   fontSize?: number;
   color?: string;
   fontWeight?: string;
+  fontStyle?: 'normal' | 'italic';
   textAlign?: 'left' | 'center' | 'right';
   background?: string;
   backgroundSize?: number;
@@ -61,10 +63,13 @@ const BACKGROUNDS = [
 ];
 
 const FONTS = [
-  { id: 'font-serif', name: 'Serif' },
-  { id: 'font-sans', name: 'Sans' },
-  { id: 'font-mono', name: 'Mono' },
-  { id: 'font-cursive', name: 'Manuscrita' },
+  { id: 'font-sans', name: 'Sans (Inter)' },
+  { id: 'font-serif', name: 'Serif (Playfair)' },
+  { id: 'font-mono', name: 'Mono (Roboto)' },
+  { id: 'font-cursive', name: 'Manuscrita (Dancing)' },
+  { id: 'font-caveat', name: 'Caveat' },
+  { id: 'font-pacifico', name: 'Pacifico' },
+  { id: 'font-montserrat', name: 'Montserrat' },
 ];
 
 const COLORS = [
@@ -147,7 +152,7 @@ const PolaroidCard = ({
         {/* Caption Area */}
         <div className="mt-auto w-full flex flex-col justify-center items-center pt-2 relative overflow-hidden">
           <div
-            className={`w-full min-h-[1.5em] px-2 break-words whitespace-pre-wrap ${photo.fontFamily || 'font-serif italic'} ${photo.fontWeight || ''}`}
+            className={`w-full min-h-[1.5em] px-2 break-words whitespace-pre-wrap ${photo.fontFamily || 'font-serif'} ${photo.fontWeight || ''} ${(photo.fontStyle === 'italic' || !photo.fontStyle) ? 'italic' : ''}`}
             style={{ 
               fontSize: `${photo.fontSize || 11}px`,
               color: photo.color || '#374151',
@@ -236,10 +241,11 @@ export default function PolaroidStudio() {
               x: 0,
               y: 0,
               background: '#ffffff',
-              fontFamily: 'font-serif italic',
+              fontFamily: 'font-serif',
               fontSize: 11,
               color: '#374151',
               fontWeight: 'font-normal',
+              fontStyle: 'italic' as const,
               textAlign: 'center' as const,
               backgroundSize: 100
             }].slice(0, 8);
@@ -442,18 +448,37 @@ export default function PolaroidStudio() {
                                   onChange={(e) => updatePhoto(selectedPhoto.id, { fontFamily: e.target.value })}
                                   className="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[11px] font-bold outline-none cursor-pointer"
                                 >
-                                  {FONTS.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
+                                  {FONTS.map(f => (
+                                    <option 
+                                      key={f.id} 
+                                      value={f.id}
+                                      className={f.id}
+                                    >
+                                      {f.name}
+                                    </option>
+                                  ))}
                                 </select>
                               </div>
                               <div>
                                 <span className="text-[9px] font-bold uppercase text-neutral-400 block mb-2 tracking-widest">Estilo</span>
-                                <button 
-                                  onClick={() => updatePhoto(selectedPhoto.id, { fontWeight: selectedPhoto.fontWeight === 'font-bold' ? 'font-normal' : 'font-bold' })}
-                                  className={`w-full py-2.5 rounded-xl border transition-all flex items-center justify-center gap-2 text-[11px] font-bold ${selectedPhoto.fontWeight === 'font-bold' ? 'bg-black text-white border-black' : 'bg-neutral-50 border-neutral-200 text-neutral-600'}`}
-                                >
-                                  <Bold size={14} />
-                                  <span>Negrito</span>
-                                </button>
+                                <div className="flex gap-2">
+                                  <button 
+                                    onClick={() => updatePhoto(selectedPhoto.id, { fontWeight: selectedPhoto.fontWeight === 'font-bold' ? 'font-normal' : 'font-bold' })}
+                                    className={`flex-1 py-2.5 rounded-xl border transition-all flex items-center justify-center gap-1 text-[10px] font-bold ${selectedPhoto.fontWeight === 'font-bold' ? 'bg-black text-white border-black' : 'bg-neutral-50 border-neutral-200 text-neutral-600'}`}
+                                    title="Negrito"
+                                  >
+                                    <Bold size={12} />
+                                    <span>B</span>
+                                  </button>
+                                  <button 
+                                    onClick={() => updatePhoto(selectedPhoto.id, { fontStyle: (selectedPhoto.fontStyle === 'italic' || !selectedPhoto.fontStyle) ? 'normal' : 'italic' })}
+                                    className={`flex-1 py-2.5 rounded-xl border transition-all flex items-center justify-center gap-1 text-[10px] font-bold ${(selectedPhoto.fontStyle === 'italic' || !selectedPhoto.fontStyle) ? 'bg-black text-white border-black' : 'bg-neutral-50 border-neutral-200 text-neutral-600'}`}
+                                    title="Itálico"
+                                  >
+                                    <Italic size={12} />
+                                    <span>I</span>
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
