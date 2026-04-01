@@ -1,5 +1,5 @@
 {
   "name": "Polaroid Print Studio",
-  "description": "Crie e imprima fotos no formato Polaroid em folhas A4 com personalização de texto e papel.",
+  "description": "Crie e salve fotos no formato Polaroid em PDF para folhas A4 com personalização de texto e papel.",
   "requestFramePermissions": []
 }
