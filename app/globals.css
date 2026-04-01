@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --a4-width: 210mm;
+    --a4-height: 297mm;
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .sheet-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+.print-only {
+  display: none;
+}
+
+.polaroid-shadow {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.a4-sheet {
+  width: var(--a4-width);
+  height: var(--a4-height);
+  background: white;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
