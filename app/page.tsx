@@ -233,7 +233,7 @@ export default function PolaroidStudio() {
             className="flex items-center gap-2 px-4 py-2 bg-neutral-100 hover:bg-neutral-200 rounded-full text-sm font-semibold transition-colors"
           >
             <Upload size={18} />
-            <span>Upload</span>
+            <span className="hidden sm:inline">Upload</span>
           </button>
           <button 
             onClick={handlePrint}
@@ -241,7 +241,7 @@ export default function PolaroidStudio() {
             className="flex items-center gap-2 px-6 py-2 bg-black hover:bg-neutral-800 disabled:bg-neutral-300 text-white rounded-full text-sm font-semibold transition-all shadow-lg shadow-black/10 active:scale-95"
           >
             <Printer size={18} />
-            <span>Imprimir Folha</span>
+            <span>Imprimir</span>
           </button>
         </div>
       </header>

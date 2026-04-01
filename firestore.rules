@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: projects
+    // Document ID: {userId}
+    // Fields:
+    //   - photos: list (required) - List of photo objects
+    //   - settings: map (required) - Paper settings
+    //   - updatedAt: timestamp (required) - Last update time
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidProject(data) {
+      return data.keys().hasAll(['photos', 'settings', 'updatedAt']) &&
+             data.photos is list &&
+             data.settings is map &&
+             data.updatedAt is timestamp;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /projects/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidProject(request.resource.data);
+      allow update: if isOwner(userId) && isValidProject(request.resource.data);
+      allow delete: if isOwner(userId);
+    }
+  }
+}

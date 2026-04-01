@@ -1,0 +1,31 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "User's Polaroid project containing photos and settings",
+      "type": "object",
+      "properties": {
+        "photos": {
+          "type": "array",
+          "description": "List of Polaroid photos with their settings"
+        },
+        "settings": {
+          "type": "object",
+          "description": "Paper and print settings"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["photos", "settings", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/projects/{userId}": {
+      "schema": "Project",
+      "description": "User-specific project data"
+    }
+  }
+}
