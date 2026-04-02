@@ -365,10 +365,10 @@ export default function PolaroidStudio() {
   const applyFiltersToAll = () => {
     const selected = photos.find(p => p.id === selectedPhotoId);
     if (!selected) return;
-    const { brightness, grayscale, sepia } = selected;
+    const { grayscale, sepia } = selected;
 
     setPhotos(prev => prev.map(p => ({
-      ...p, brightness, grayscale, sepia
+      ...p, grayscale, sepia
     })));
   };
 
@@ -380,6 +380,19 @@ export default function PolaroidStudio() {
 
     setPhotos(prev => prev.map(p => ({
       ...p, text
+    })));
+  };
+
+  // 5. Aplica as configurações de Layout, Rotação, Zoom e Posição
+  const applyLayoutToAll = () => {
+    const selected = photos.find(p => p.id === selectedPhotoId);
+    if (!selected) return;
+    
+    // Extraímos apenas a propriedades de layout
+    const { orientation } = selected;
+    
+    setPhotos(prev => prev.map(p => ({
+      ...p, orientation
     })));
   };
 
@@ -797,6 +810,16 @@ export default function PolaroidStudio() {
                               >
                                 <Layout size={16} />
                                 <span className="text-[9px] font-bold uppercase">Layout</span>
+                              </button>
+                            </div>
+
+                            {/* Botão Aplicar Layout e Ajustes a Todas */}
+                            <div className="border-neutral-100">
+                              <button
+                                onClick={applyLayoutToAll}
+                                className="w-full flex items-center justify-center gap-2 py-3 bg-neutral-50 hover:bg-neutral-200 hover:text-black text-neutral-700 rounded-xl border border-neutral-100 transition-all font-bold text-[11px] uppercase tracking-widest"
+                              >
+                                <Wand2 size={14} /> Aplicar Layout a Todas
                               </button>
                             </div>
 
