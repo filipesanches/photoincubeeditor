@@ -23,7 +23,8 @@ import {
   AlignRight,
   ChevronDown,
   Italic,
-  RotateCw
+  RotateCw,
+  Wand2
 } from 'lucide-react';
 
 // --- Types ---
@@ -337,6 +338,40 @@ export default function PolaroidStudio() {
     setPhotos(prev => prev.filter(p => p.id !== id));
   };
 
+  // --- FUNÇÕES "APLICAR A TODAS" ---
+  // 1. Aplica apenas o estilo do texto (mantém o texto original de cada foto intacto)
+  const applyCaptionStyleToAll = () => {
+    const selected = photos.find(p => p.id === selectedPhotoId);
+    if (!selected) return;
+    const { fontFamily, fontSize, color, fontWeight, fontStyle, textAlign } = selected;
+    
+    setPhotos(prev => prev.map(p => ({
+      ...p, fontFamily, fontSize, color, fontWeight, fontStyle, textAlign
+    })));
+  };
+
+  // 2. Aplica apenas o fundo
+  const applyBackgroundToAll = () => {
+    const selected = photos.find(p => p.id === selectedPhotoId);
+    if (!selected) return;
+    const { background, backgroundSize } = selected;
+    
+    setPhotos(prev => prev.map(p => ({
+      ...p, background, backgroundSize
+    })));
+  };
+
+  // 3. Aplica apenas os filtros e efeitos de cor
+  const applyFiltersToAll = () => {
+    const selected = photos.find(p => p.id === selectedPhotoId);
+    if (!selected) return;
+    const { brightness, grayscale, sepia } = selected;
+    
+    setPhotos(prev => prev.map(p => ({
+      ...p, brightness, grayscale, sepia
+    })));
+  };
+
   const handlePrint = async () => {
     if (!sheetRef.current) return;
 
@@ -591,6 +626,14 @@ export default function PolaroidStudio() {
                                 </div>
                               </div>
                             </div>
+                            <div className="pt-2 border-t border-neutral-100 mt-4">
+                              <button
+                                onClick={applyCaptionStyleToAll}
+                                className="w-full flex items-center justify-center gap-2 py-3 bg-neutral-50 hover:bg-neutral-200 hover:text-black text-neutral-700 rounded-xl border border-neutral-100 transition-all font-bold text-[11px] uppercase tracking-widest"
+                              >
+                                <Wand2 size={14} /> Aplicar Estilo da Fonte a Todas
+                              </button>
+                            </div>
                           </div>
                         </motion.div>
                       )}
@@ -667,13 +710,23 @@ export default function PolaroidStudio() {
                                 </div>
                               ))}
 
-                              {/* Botão de Novo Fundo */}
+                              {/* Botão de Novo Fundo... */}
                               <button
                                 onClick={() => backgroundInputRef.current?.click()}
                                 className="w-9 h-9 rounded-xl border border-dashed border-neutral-300 flex items-center justify-center text-neutral-400 hover:text-black hover:border-neutral-400 transition-all bg-neutral-50"
                                 title="Adicionar fundo personalizado"
                               >
                                 <Plus size={18} />
+                              </button>
+                            </div>
+
+                            {/* Botão Aplicar Fundo a Todas */}
+                            <div className="pt-2 border-t border-neutral-100 mt-4">
+                              <button
+                                onClick={applyBackgroundToAll}
+                                className="w-full flex items-center justify-center gap-2 py-3 bg-neutral-50 hover:bg-neutral-200 hover:text-black text-neutral-700 rounded-xl border border-neutral-100 transition-all font-bold text-[11px] uppercase tracking-widest"
+                              >
+                                <Wand2 size={14} /> Aplicar Fundo a Todas
                               </button>
                             </div>
                           </div>
@@ -763,13 +816,16 @@ export default function PolaroidStudio() {
                               </div>
                             </div>
 
+                            
+
+
                             {/* Botão Remover */}
                             <button
                               onClick={() => {
                                 removePhoto(selectedPhoto.id);
                                 setSelectedPhotoId(null);
                               }}
-                              className="w-full flex items-center justify-center gap-2 py-3 bg-red-50 hover:bg-red-500 hover:text-white text-red-500 rounded-xl border border-red-100 transition-all font-bold text-[11px] uppercase tracking-widest"
+                              className="w-full flex items-center justify-center gap-2 py-3 bg-red-50 hover:bg-red-500 hover:text-white text-red-500 rounded-xl border border-red-100 transition-all font-bold text-[11px] uppercase tracking-widest mt-2"
                             >
                               <Trash2 size={16} />
                               Excluir Foto
@@ -839,6 +895,16 @@ export default function PolaroidStudio() {
                             >
                               <RotateCcw size={12} /> Resetar Efeitos
                             </button>
+
+                            {/* Botão Aplicar Filtros a Todas */}
+                            <div className="border-t border-neutral-100">
+                              <button
+                                onClick={applyFiltersToAll}
+                                className="w-full flex items-center justify-center gap-2 py-3 bg-neutral-50 hover:bg-neutral-200 hover:text-black text-neutral-700 rounded-xl border border-neutral-100 transition-all font-bold text-[11px] uppercase tracking-widest"
+                              >
+                                <Wand2 size={14} /> Aplicar Efeitos a Todas
+                              </button>
+                            </div>
                           </div>
                         </motion.div>
                       )}
