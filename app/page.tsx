@@ -497,34 +497,8 @@ export default function PolaroidStudio() {
                                   </button>
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* Text Style & Background */}
-                  <div className="border border-neutral-100 rounded-2xl overflow-hidden">
-                    <button 
-                      onClick={() => toggleSection('style')}
-                      className="w-full flex items-center justify-between p-4 bg-neutral-50/50 hover:bg-neutral-50 transition-colors"
-                    >
-                      <span className="text-[10px] font-black uppercase text-neutral-500 tracking-widest">Fundo</span>
-                      <ChevronDown size={16} className={`text-neutral-400 transition-transform duration-300 ${expandedSections.style ? 'rotate-180' : ''}`} />
-                    </button>
-
-                    <AnimatePresence initial={false}>
-                      {expandedSections.style && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        >
-                          <div className="p-4 space-y-4 border-t border-neutral-100">
-                            <div className="flex gap-4">
-                              <div className="flex-1">
+                              <div>
+                              <div>
                                 <div className="flex justify-between mb-2">
                                   <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Tamanho</span>
                                   <span className="text-[10px] font-black text-neutral-900">{selectedPhoto.fontSize || 11}px</span>
@@ -563,6 +537,32 @@ export default function PolaroidStudio() {
                                 </div>
                               </div>
                             </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Text Style & Background */}
+                  <div className="border border-neutral-100 rounded-2xl overflow-hidden">
+                    <button 
+                      onClick={() => toggleSection('style')}
+                      className="w-full flex items-center justify-between p-4 bg-neutral-50/50 hover:bg-neutral-50 transition-colors"
+                    >
+                      <span className="text-[10px] font-black uppercase text-neutral-500 tracking-widest">Fundo</span>
+                      <ChevronDown size={16} className={`text-neutral-400 transition-transform duration-300 ${expandedSections.style ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {expandedSections.style && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        >
+                          <div className="p-4 space-y-4 border-t border-neutral-100">
                             <div>
                               <div className="flex justify-between items-center mb-2">
                                 <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Fundo</span>
