@@ -660,7 +660,7 @@ export default function PolaroidStudio() {
                                 </div>
                               </div>
                             </div>
-                            <div className="pt-2 border-neutral-100">
+                            <div className="border-neutral-100">
                               <button
                                 onClick={applyCaptionStyleToAll}
                                 className="w-full flex items-center justify-center gap-2 py-3 bg-neutral-50 hover:bg-neutral-200 hover:text-black text-neutral-700 rounded-xl border border-neutral-100 transition-all font-bold text-[11px] uppercase tracking-widest"
