@@ -133,21 +133,37 @@ const PolaroidCard = ({
         }}
       >
         {/* Photo Area */}
+        {/* Photo Area */}
         <div className={`relative w-full overflow-hidden bg-gray-100 transition-all duration-300 ${
           isPortrait ? 'aspect-square' : 'aspect-[4/3]'
         }`}>
-          <Image 
-            src={photo.src} 
-            alt="Preview" 
-            fill
-            unoptimized
-            referrerPolicy="no-referrer"
-            className="object-contain transition-all duration-200"
-            style={{ 
-              transform: `rotate(${photo.rotation}deg) scale(${photo.zoom}) translate(${photo.x}%, ${photo.y}%)`,
-              transformOrigin: 'center center'
-            }}
-          />
+          
+          {/* Camada de Blur (Fundo) */}
+          <div className="absolute inset-0 z-0">
+            <Image 
+              src={photo.src} 
+              alt="Blur Background" 
+              fill
+              unoptimized
+              className="object-cover blur-md opacity-50 scale-120" // O scale evita bordas brancas no blur
+            />
+          </div>
+
+          {/* Foto Principal (Frente) */}
+          <div className="relative z-10 w-full h-full">
+            <Image 
+              src={photo.src} 
+              alt="Preview" 
+              fill
+              unoptimized
+              referrerPolicy="no-referrer"
+              className="object-contain transition-all duration-200"
+              style={{ 
+                transform: `rotate(${photo.rotation}deg) scale(${photo.zoom}) translate(${photo.x}%, ${photo.y}%)`,
+                transformOrigin: 'center center'
+              }}
+            />
+          </div>
         </div>
         
         {/* Caption Area */}
@@ -494,7 +510,7 @@ export default function PolaroidStudio() {
                       onClick={() => toggleSection('style')}
                       className="w-full flex items-center justify-between p-4 bg-neutral-50/50 hover:bg-neutral-50 transition-colors"
                     >
-                      <span className="text-[10px] font-black uppercase text-neutral-500 tracking-widest">Estilo & Fundo</span>
+                      <span className="text-[10px] font-black uppercase text-neutral-500 tracking-widest">Fundo</span>
                       <ChevronDown size={16} className={`text-neutral-400 transition-transform duration-300 ${expandedSections.style ? 'rotate-180' : ''}`} />
                     </button>
 
