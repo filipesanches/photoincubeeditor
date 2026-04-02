@@ -22,7 +22,8 @@ import {
   AlignCenter,
   AlignRight,
   ChevronDown,
-  Italic
+  Italic,
+  RotateCw
 } from 'lucide-react';
 
 // --- Types ---
@@ -141,7 +142,7 @@ const PolaroidCard = ({
             fill
             unoptimized
             referrerPolicy="no-referrer"
-            className="object-cover transition-all duration-200"
+            className="object-contain transition-all duration-200"
             style={{ 
               transform: `rotate(${photo.rotation}deg) scale(${photo.zoom}) translate(${photo.x}%, ${photo.y}%)`,
               transformOrigin: 'center center'
@@ -666,10 +667,17 @@ export default function PolaroidStudio() {
 
                             <div className="flex gap-2">
                               <button 
-                                onClick={() => updatePhoto(selectedPhoto.id, { rotation: (selectedPhoto.rotation + 90) % 360 })}
+                                onClick={() => updatePhoto(selectedPhoto.id, { rotation: (selectedPhoto.rotation - 10) % 360 })}
                                 className="flex-1 py-2.5 bg-white hover:bg-neutral-100 text-neutral-600 rounded-xl border border-neutral-200 transition-all shadow-sm flex items-center justify-center gap-2 text-[11px] font-bold"
                               >
                                 <RotateCcw size={16} />
+                                <span>Girar</span>
+                              </button>
+                              <button 
+                                onClick={() => updatePhoto(selectedPhoto.id, { rotation: (selectedPhoto.rotation + 10) % 360 })}
+                                className="flex-1 py-2.5 bg-white hover:bg-neutral-100 text-neutral-600 rounded-xl border border-neutral-200 transition-all shadow-sm flex items-center justify-center gap-2 text-[11px] font-bold"
+                              >
+                                <RotateCw size={16} />
                                 <span>Girar</span>
                               </button>
                               <button 
@@ -688,7 +696,7 @@ export default function PolaroidStudio() {
                                   <span className="text-[9px] font-black">{selectedPhoto.zoom.toFixed(1)}x</span>
                                 </div>
                                 <input 
-                                  type="range" min="1" max="3" step="0.1" 
+                                  type="range" min="1" max="5" step="0.1" 
                                   value={selectedPhoto.zoom} 
                                   onChange={(e) => updatePhoto(selectedPhoto.id, { zoom: parseFloat(e.target.value) })}
                                   className="w-full h-1 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-black"
