@@ -197,11 +197,20 @@ export default function PolaroidStudio() {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     caption: false,
     style: false,
-    adjustments: false
+    adjustments: false,
+    filters: false
   });
 
   const toggleSection = (section: string) => {
-    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+    setExpandedSections(prev => ({
+      // Primeiro, definimos todas as seções como fechadas (false)
+      caption: false,
+      style: false,
+      adjustments: false,
+      filters: false,
+      // Depois, invertemos o estado APENAS da seção que foi clicada
+      [section]: !prev[section]
+    }));
   };
 
   // Adjust preview scale on mount based on screen size
