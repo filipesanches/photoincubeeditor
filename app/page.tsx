@@ -250,7 +250,7 @@ export default function PolaroidStudio() {
       if (event.target?.result) {
         const dataUrl = event.target.result as string;
         const bgId = `url(${dataUrl})`;
-        
+
         setCustomBackgrounds(prev => [...prev, { id: bgId, url: bgId }]);
 
         // Se tiver uma foto selecionada, já aplica o fundo nela automaticamente
@@ -260,7 +260,7 @@ export default function PolaroidStudio() {
       }
     };
     reader.readAsDataURL(file);
-    
+
     // Limpa o input para poder subir o mesmo arquivo de novo se necessário
     if (backgroundInputRef.current) {
       backgroundInputRef.current.value = '';
@@ -271,7 +271,7 @@ export default function PolaroidStudio() {
   const removeCustomBackground = (idToRemove: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Evita que o clique vaze para o container
     setCustomBackgrounds(prev => prev.filter(bg => bg.id !== idToRemove));
-    
+
     // Se a foto atual estava usando esse fundo, volta para branco
     if (selectedPhotoId) {
       const currentPhoto = photos.find(p => p.id === selectedPhotoId);
@@ -281,7 +281,7 @@ export default function PolaroidStudio() {
     }
   };
 
-  
+
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
@@ -331,19 +331,27 @@ export default function PolaroidStudio() {
   const handlePrint = async () => {
     if (!sheetRef.current) return;
 
+    // Guarda a escala atual para poder restaurar depois do print
+    const previousScale = previewScale;
+
+    // Desmarca a foto (fecha o editor e remove a borda de seleção)
+    setSelectedPhotoId(null);
+    // Força o zoom da folha para 100%
+    setPreviewScale(1);
+
     setIsGenerating(true);
 
     try {
-      // Ensure we are at the top to avoid capture issues
+      // Garante que a página esteja no topo para evitar cortes na imagem
       window.scrollTo(0, 0);
 
-      // Small delay to ensure any UI changes are rendered
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Aumentamos o delay para 800ms para garantir que a animação 
+      // de fechamento do editor e o redimensionamento do zoom terminem completamente
+      await new Promise(resolve => setTimeout(resolve, 800));
 
       const sheet = sheetRef.current;
 
       // Use modern-screenshot to capture the sheet as JPEG
-      // It handles modern CSS like oklch much better than html2canvas
       const imgData = await domToJpeg(sheet, {
         quality: 0.95,
         scale: 2,
@@ -373,6 +381,8 @@ export default function PolaroidStudio() {
       alert('Houve um erro ao gerar o PDF. Por favor, tente novamente ou use um navegador diferente.');
     } finally {
       setIsGenerating(false);
+      // Retorna o zoom para como estava antes do usuário clicar em baixar
+      setPreviewScale(previousScale);
     }
   };
 
@@ -624,7 +634,7 @@ export default function PolaroidStudio() {
                                   }}
                                 />
                               ))}
-                              
+
                               {/* Fundos Personalizados (LocalStorage) */}
                               {customBackgrounds.map(bg => (
                                 <div key={bg.id} className="relative group">
