@@ -146,6 +146,9 @@ const PolaroidCard = ({
               fill
               unoptimized
               className="object-cover blur-md opacity-50 scale-120" // O scale evita bordas brancas no blur
+              style={{
+                filter: `brightness(${photo.brightness ?? 100}%) ${photo.grayscale ? 'grayscale(100%)' : ''} ${photo.sepia ? 'sepia(100%)' : ''} blur(5px)`
+              }}
             />
           </div>
 
@@ -217,6 +220,7 @@ export default function PolaroidStudio() {
 
   const [customBackgrounds, setCustomBackgrounds] = useState<{ id: string, url: string }[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const backgroundInputRef = useRef<HTMLInputElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
 
   // Load custom backgrounds from localStorage
@@ -236,6 +240,48 @@ export default function PolaroidStudio() {
     localStorage.setItem('polaroid-custom-backgrounds', JSON.stringify(customBackgrounds));
   }, [customBackgrounds]);
 
+  // Função para lidar com o upload do novo fundo
+  const handleBackgroundUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        const dataUrl = event.target.result as string;
+        const bgId = `url(${dataUrl})`;
+        
+        setCustomBackgrounds(prev => [...prev, { id: bgId, url: bgId }]);
+
+        // Se tiver uma foto selecionada, já aplica o fundo nela automaticamente
+        if (selectedPhotoId) {
+          updatePhoto(selectedPhotoId, { background: bgId, backgroundSize: 100 });
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+    
+    // Limpa o input para poder subir o mesmo arquivo de novo se necessário
+    if (backgroundInputRef.current) {
+      backgroundInputRef.current.value = '';
+    }
+  };
+
+  // Função para remover um fundo personalizado do LocalStorage
+  const removeCustomBackground = (idToRemove: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Evita que o clique vaze para o container
+    setCustomBackgrounds(prev => prev.filter(bg => bg.id !== idToRemove));
+    
+    // Se a foto atual estava usando esse fundo, volta para branco
+    if (selectedPhotoId) {
+      const currentPhoto = photos.find(p => p.id === selectedPhotoId);
+      if (currentPhoto && currentPhoto.background === idToRemove) {
+        updatePhoto(selectedPhotoId, { background: '#ffffff' });
+      }
+    }
+  };
+
+  
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
@@ -566,6 +612,7 @@ export default function PolaroidStudio() {
                               )}
                             </div>
                             <div className="flex gap-2.5 flex-wrap">
+                              {/* Fundos Padrão */}
                               {BACKGROUNDS.map(bg => (
                                 <button
                                   key={bg.id}
@@ -577,9 +624,35 @@ export default function PolaroidStudio() {
                                   }}
                                 />
                               ))}
+                              
+                              {/* Fundos Personalizados (LocalStorage) */}
+                              {customBackgrounds.map(bg => (
+                                <div key={bg.id} className="relative group">
+                                  <button
+                                    onClick={() => updatePhoto(selectedPhoto.id, { background: bg.id, backgroundSize: 100 })}
+                                    className={`w-9 h-9 rounded-xl border border-neutral-200 transition-all ${selectedPhoto.background === bg.id ? 'ring-2 ring-black ring-offset-2 scale-110' : 'hover:scale-110 shadow-sm'}`}
+                                    style={{
+                                      backgroundColor: '#ffffff',
+                                      backgroundImage: bg.url,
+                                      backgroundSize: 'cover',
+                                      backgroundPosition: 'center'
+                                    }}
+                                  />
+                                  <button
+                                    onClick={(e) => removeCustomBackground(bg.id, e)}
+                                    className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
+                                    title="Remover fundo"
+                                  >
+                                    <X size={10} />
+                                  </button>
+                                </div>
+                              ))}
+
+                              {/* Botão de Novo Fundo */}
                               <button
-                                onClick={() => {/* Lógica de upload já existente */ }}
+                                onClick={() => backgroundInputRef.current?.click()}
                                 className="w-9 h-9 rounded-xl border border-dashed border-neutral-300 flex items-center justify-center text-neutral-400 hover:text-black hover:border-neutral-400 transition-all bg-neutral-50"
+                                title="Adicionar fundo personalizado"
                               >
                                 <Plus size={18} />
                               </button>
@@ -878,6 +951,15 @@ export default function PolaroidStudio() {
         ref={fileInputRef}
         onChange={handleUpload}
         multiple
+        accept="image/*"
+        className="hidden"
+      />
+
+      {/* NOVO INPUT PARA FUNDOS */}
+      <input
+        type="file"
+        ref={backgroundInputRef}
+        onChange={handleBackgroundUpload}
         accept="image/*"
         className="hidden"
       />
