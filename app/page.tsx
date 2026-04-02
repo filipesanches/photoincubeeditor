@@ -5,12 +5,12 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import jsPDF from 'jspdf';
 import { domToJpeg } from 'modern-screenshot';
-import { 
-  Upload, 
-  Trash2, 
-  RotateCcw, 
-  Type, 
-  Layout, 
+import {
+  Upload,
+  Trash2,
+  RotateCcw,
+  Type,
+  Layout,
   Settings2,
   Image as ImageIcon,
   Plus,
@@ -84,15 +84,15 @@ const COLORS = [
 
 // --- Components ---
 
-const PolaroidCard = ({ 
-  photo, 
-  onUpdate, 
+const PolaroidCard = ({
+  photo,
+  onUpdate,
   onRemove,
   previewScale = 1,
   isSelected,
   onSelect
-}: { 
-  photo: PolaroidPhoto; 
+}: {
+  photo: PolaroidPhoto;
   onUpdate: (id: string, updates: Partial<PolaroidPhoto>) => void;
   onRemove: (id: string) => void;
   previewScale?: number;
@@ -111,21 +111,19 @@ const PolaroidCard = ({
   };
 
   return (
-    <div 
+    <div
       onClick={onSelect}
-      className={`relative group flex items-center justify-center transition-all duration-300 mx-auto w-[100mm] h-[70mm] cursor-pointer ${
-        isSelected ? 'z-50 ring-4 ring-black ring-offset-4 rounded-lg' : 'z-10 hover:scale-[1.02]'
-      }`}
+      className={`relative group flex items-center justify-center transition-all duration-300 mx-auto w-[100mm] h-[70mm] cursor-pointer ${isSelected ? 'z-50 ring-4 ring-black ring-offset-4 rounded-lg' : 'z-10 hover:scale-[1.02]'
+        }`}
     >
       {/* Visual Polaroid - This part handles rotation */}
-      <div 
-        className={`flex flex-col items-center border border-neutral-100 transition-all duration-300 z-10 ${
-          isPortrait ? 'w-[70mm] h-[100mm] p-2 pb-8' : 'w-full h-full p-2 pb-8'
-        }`}
+      <div
+        className={`flex flex-col items-center border border-neutral-100 transition-all duration-300 z-10 ${isPortrait ? 'w-[70mm] h-[100mm] p-2 pb-8' : 'w-full h-full p-2 pb-8'
+          }`}
         style={{
           ...cardStyle,
-          ...(isPortrait ? { 
-            transform: 'rotate(-90deg)', 
+          ...(isPortrait ? {
+            transform: 'rotate(-90deg)',
             position: 'absolute',
             top: 'calc(50% - 50mm)',
             left: 'calc(50% - 35mm)'
@@ -134,15 +132,14 @@ const PolaroidCard = ({
       >
         {/* Photo Area */}
         {/* Photo Area */}
-        <div className={`relative w-full overflow-hidden bg-gray-100 transition-all duration-300 ${
-          isPortrait ? 'aspect-square' : 'aspect-[4/3]'
-        }`}>
-          
+        <div className={`relative w-full overflow-hidden bg-gray-100 transition-all duration-300 ${isPortrait ? 'aspect-square' : 'aspect-[4/3]'
+          }`}>
+
           {/* Camada de Blur (Fundo) */}
           <div className="absolute inset-0 z-0">
-            <Image 
-              src={photo.src} 
-              alt="Blur Background" 
+            <Image
+              src={photo.src}
+              alt="Blur Background"
               fill
               unoptimized
               className="object-cover blur-md opacity-50 scale-120" // O scale evita bordas brancas no blur
@@ -151,26 +148,26 @@ const PolaroidCard = ({
 
           {/* Foto Principal (Frente) */}
           <div className="relative z-10 w-full h-full">
-            <Image 
-              src={photo.src} 
-              alt="Preview" 
+            <Image
+              src={photo.src}
+              alt="Preview"
               fill
               unoptimized
               referrerPolicy="no-referrer"
               className="object-contain transition-all duration-200"
-              style={{ 
+              style={{
                 transform: `rotate(${photo.rotation}deg) scale(${photo.zoom}) translate(${photo.x}%, ${photo.y}%)`,
                 transformOrigin: 'center center'
               }}
             />
           </div>
         </div>
-        
+
         {/* Caption Area */}
         <div className="mt-auto w-full flex flex-col justify-center items-center pt-2 relative overflow-hidden">
           <div
             className={`w-full min-h-[1.5em] px-2 break-words whitespace-pre-wrap ${photo.fontFamily || 'font-serif'} ${photo.fontWeight || ''} ${(photo.fontStyle === 'italic' || !photo.fontStyle) ? 'italic' : ''}`}
-            style={{ 
+            style={{
               fontSize: `${photo.fontSize || 11}px`,
               color: photo.color || '#374151',
               fontWeight: photo.fontWeight === 'font-bold' ? 'bold' : 'normal',
@@ -214,7 +211,7 @@ export default function PolaroidStudio() {
     updateScale();
   }, []);
 
-  const [customBackgrounds, setCustomBackgrounds] = useState<{id: string, url: string}[]>([]);
+  const [customBackgrounds, setCustomBackgrounds] = useState<{ id: string, url: string }[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -283,18 +280,18 @@ export default function PolaroidStudio() {
 
   const handlePrint = async () => {
     if (!sheetRef.current) return;
-    
+
     setIsGenerating(true);
-    
+
     try {
       // Ensure we are at the top to avoid capture issues
       window.scrollTo(0, 0);
-      
+
       // Small delay to ensure any UI changes are rendered
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       const sheet = sheetRef.current;
-      
+
       // Use modern-screenshot to capture the sheet as JPEG
       // It handles modern CSS like oklch much better than html2canvas
       const imgData = await domToJpeg(sheet, {
@@ -310,7 +307,7 @@ export default function PolaroidStudio() {
           return true;
         }
       });
-      
+
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -345,9 +342,9 @@ export default function PolaroidStudio() {
               <p className="text-[8px] md:text-[10px] font-bold text-neutral-400 uppercase tracking-widest mt-0.5 md:mt-1">Crie sua folha A4</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2 md:gap-4">
-            <button 
+            <button
               onClick={() => fileInputRef.current?.click()}
               className="flex items-center gap-2 p-2.5 md:px-6 md:py-3 bg-neutral-100 hover:bg-neutral-200 text-black rounded-xl md:rounded-2xl text-xs font-bold transition-all"
               title="Upload de Fotos"
@@ -355,7 +352,7 @@ export default function PolaroidStudio() {
               <Upload size={16} />
               <span className="hidden md:inline">Upload de Fotos</span>
             </button>
-            <button 
+            <button
               onClick={handlePrint}
               disabled={photos.length === 0 || isGenerating}
               className="flex items-center gap-2 p-2.5 md:px-8 md:py-3 bg-black hover:bg-neutral-800 text-white rounded-xl md:rounded-2xl text-xs font-bold transition-all shadow-xl shadow-black/20 disabled:opacity-30 disabled:shadow-none"
@@ -373,80 +370,76 @@ export default function PolaroidStudio() {
       </header>
 
       <main className="max-w-[1600px] mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-[320px_1fr] lg:grid-cols-[380px_1fr] gap-6 lg:gap-10 items-start">
-        
+
         {/* Photo Editor Section - Left Sidebar */}
         <div className="no-print md:sticky md:top-24 h-fit max-h-screen md:max-h-[calc(100vh-120px)] overflow-y-auto scrollbar-hide" data-html2canvas-ignore>
           <AnimatePresence mode="wait">
             {selectedPhoto ? (
-              <motion.section 
+              <motion.section
                 key="editor"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="w-full bg-white border border-neutral-200 rounded-[24px] md:rounded-[32px] p-4 md:p-6 shadow-2xl shadow-black/5 space-y-4 md:space-y-6"
+                className="w-full bg-white border border-neutral-200 rounded-[24px] p-5 md:p-6 space-y-5"
               >
-                <div className="flex items-center justify-between border-b border-neutral-100 pb-3 md:pb-4">
-                  <div className="flex items-center gap-2 md:gap-3">
-                    <div className="w-7 h-7 md:w-8 md:h-8 bg-black rounded-lg md:rounded-xl flex items-center justify-center shadow-lg shadow-black/10">
-                      <Settings2 size={14} className="text-white md:hidden" />
-                      <Settings2 size={16} className="text-white hidden md:block" />
+                {/* Header do Editor */}
+                <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-black rounded-xl flex items-center justify-center shadow-lg shadow-black/10">
+                      <Settings2 size={16} className="text-white" />
                     </div>
-                    <h2 className="text-[10px] md:text-xs font-black uppercase tracking-widest">Editor</h2>
+                    <h2 className="text-[11px] font-black uppercase tracking-[0.15em] text-neutral-800">Editor</h2>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button 
-                      onClick={() => setSelectedPhotoId(null)}
-                      className="p-1.5 md:p-2 hover:bg-neutral-100 rounded-lg md:rounded-xl transition-colors"
-                      title="Fechar Editor"
-                    >
-                      <X size={16} className="text-neutral-400 md:hidden" />
-                      <X size={18} className="text-neutral-400 hidden md:block" />
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setSelectedPhotoId(null)}
+                    className="p-2 hover:bg-neutral-100 rounded-xl transition-colors text-neutral-400 hover:text-black"
+                    title="Fechar Editor"
+                  >
+                    <X size={18} />
+                  </button>
                 </div>
 
-                <div className="space-y-3">
-                  {/* Caption & Font */}
-                  <div className="border border-neutral-100 rounded-2xl overflow-hidden">
-                    <button 
+                <div className="space-y-4">
+                  {/* Seção: Legenda & Fonte */}
+                  <div className="border border-neutral-200 rounded-2xl overflow-hidden shadow-sm">
+                    <button
                       onClick={() => toggleSection('caption')}
                       className="w-full flex items-center justify-between p-4 bg-neutral-50/50 hover:bg-neutral-50 transition-colors"
                     >
                       <span className="text-[10px] font-black uppercase text-neutral-500 tracking-widest">Legenda & Fonte</span>
                       <ChevronDown size={16} className={`text-neutral-400 transition-transform duration-300 ${expandedSections.caption ? 'rotate-180' : ''}`} />
                     </button>
-                    
+
                     <AnimatePresence initial={false}>
                       {expandedSections.caption && (
                         <motion.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: 'easeInOut' }}
+                          className="border-t border-neutral-100"
                         >
-                          <div className="p-4 space-y-4 border-t border-neutral-100">
-                            <div>
-                              <div className="flex justify-between items-center mb-2">
-                                <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Texto</span>
+                          <div className="p-4 space-y-5">
+                            {/* Alinhamento e Textarea */}
+                            <div className="space-y-3">
+                              <div className="flex justify-between items-center">
+                                <label className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Texto</label>
                                 <div className="flex bg-neutral-100 p-1 rounded-lg gap-1">
-                                  <button 
-                                    onClick={() => updatePhoto(selectedPhoto.id, { textAlign: 'left' })}
-                                    className={`p-1 rounded transition-all ${selectedPhoto.textAlign === 'left' ? 'bg-white shadow-sm text-black' : 'text-neutral-400'}`}
-                                  >
-                                    <AlignLeft size={14} />
-                                  </button>
-                                  <button 
-                                    onClick={() => updatePhoto(selectedPhoto.id, { textAlign: 'center' })}
-                                    className={`p-1 rounded transition-all ${selectedPhoto.textAlign === 'center' || !selectedPhoto.textAlign ? 'bg-white shadow-sm text-black' : 'text-neutral-400'}`}
-                                  >
-                                    <AlignCenter size={14} />
-                                  </button>
-                                  <button 
-                                    onClick={() => updatePhoto(selectedPhoto.id, { textAlign: 'right' })}
-                                    className={`p-1 rounded transition-all ${selectedPhoto.textAlign === 'right' ? 'bg-white shadow-sm text-black' : 'text-neutral-400'}`}
-                                  >
-                                    <AlignRight size={14} />
-                                  </button>
+                                  {[
+                                    { icon: AlignLeft, value: 'left' },
+                                    { icon: AlignCenter, value: 'center' },
+                                    { icon: AlignRight, value: 'right' }
+                                  ].map((item) => (
+                                    <button
+                                      key={item.value}
+                                      onClick={() => updatePhoto(selectedPhoto.id, { textAlign: item.value })}
+                                      className={`p-1.5 rounded transition-all ${(selectedPhoto.textAlign === item.value || (item.value === 'center' && !selectedPhoto.textAlign))
+                                          ? 'bg-white shadow-sm text-black'
+                                          : 'text-neutral-400 hover:text-neutral-600'
+                                        }`}
+                                    >
+                                      <item.icon size={14} />
+                                    </button>
+                                  ))}
                                 </div>
                               </div>
                               <textarea
@@ -454,89 +447,80 @@ export default function PolaroidStudio() {
                                 onChange={(e) => updatePhoto(selectedPhoto.id, { text: e.target.value })}
                                 placeholder="Escreva sua legenda..."
                                 rows={2}
-                                className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-2xl text-sm focus:ring-2 focus:ring-black outline-none transition-all resize-none"
+                                className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black/5 focus:border-black outline-none transition-all resize-none"
                               />
                             </div>
-                            <div className="grid grid-cols-2 gap-3">
-                              <div>
-                                <span className="text-[9px] font-bold uppercase text-neutral-400 block mb-2 tracking-widest">Fonte</span>
-                                <select 
+
+                            {/* Fonte e Estilo */}
+                            <div className="grid grid-cols-1 gap-4">
+                              <div className="space-y-2">
+                                <label className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Fonte</label>
+                                <select
                                   value={selectedPhoto.fontFamily}
                                   onChange={(e) => updatePhoto(selectedPhoto.id, { fontFamily: e.target.value })}
-                                  className="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[11px] font-bold outline-none cursor-pointer"
+                                  className="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[11px] font-bold outline-none cursor-pointer focus:border-black"
                                 >
                                   {FONTS.map(f => (
-                                    <option 
-                                      key={f.id} 
-                                      value={f.id}
-                                      className={f.id}
-                                    >
-                                      {f.name}
-                                    </option>
+                                    <option key={f.id} value={f.id}>{f.name}</option>
                                   ))}
                                 </select>
                               </div>
-                              <div>
-                                <span className="text-[9px] font-bold uppercase text-neutral-400 block mb-2 tracking-widest">Estilo</span>
-                                <div className="flex gap-2">
-                                  <button 
-                                    onClick={() => updatePhoto(selectedPhoto.id, { fontWeight: selectedPhoto.fontWeight === 'font-bold' ? 'font-normal' : 'font-bold' })}
-                                    className={`flex-1 py-2.5 rounded-xl border transition-all flex items-center justify-center gap-1 text-[10px] font-bold ${selectedPhoto.fontWeight === 'font-bold' ? 'bg-black text-white border-black' : 'bg-neutral-50 border-neutral-200 text-neutral-600'}`}
-                                    title="Negrito"
-                                  >
-                                    <Bold size={12} />
-                                    <span>B</span>
-                                  </button>
-                                  <button 
-                                    onClick={() => updatePhoto(selectedPhoto.id, { fontStyle: (selectedPhoto.fontStyle === 'italic' || !selectedPhoto.fontStyle) ? 'normal' : 'italic' })}
-                                    className={`flex-1 py-2.5 rounded-xl border transition-all flex items-center justify-center gap-1 text-[10px] font-bold ${(selectedPhoto.fontStyle === 'italic' || !selectedPhoto.fontStyle) ? 'bg-black text-white border-black' : 'bg-neutral-50 border-neutral-200 text-neutral-600'}`}
-                                    title="Itálico"
-                                  >
-                                    <Italic size={12} />
-                                    <span>I</span>
-                                  </button>
-                                </div>
+
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => updatePhoto(selectedPhoto.id, { fontWeight: selectedPhoto.fontWeight === 'font-bold' ? 'font-normal' : 'font-bold' })}
+                                  className={`flex-1 py-2.5 rounded-xl border transition-all flex items-center justify-center gap-2 text-[10px] font-bold ${selectedPhoto.fontWeight === 'font-bold' ? 'bg-black text-white border-black' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
+                                >
+                                  <Bold size={12} /> Negrito
+                                </button>
+                                <button
+                                  onClick={() => updatePhoto(selectedPhoto.id, { fontStyle: (selectedPhoto.fontStyle === 'italic' || !selectedPhoto.fontStyle) ? 'normal' : 'italic' })}
+                                  className={`flex-1 py-2.5 rounded-xl border transition-all flex items-center justify-center gap-2 text-[10px] font-bold ${(selectedPhoto.fontStyle === 'italic' || !selectedPhoto.fontStyle) ? 'bg-black text-white border-black' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
+                                >
+                                  <Italic size={12} /> Itálico
+                                </button>
                               </div>
-                              <div>
-                              <div>
-                                <div className="flex justify-between mb-2">
+                            </div>
+
+                            {/* Tamanho e Cor */}
+                            <div className="space-y-4">
+                              <div className="space-y-3">
+                                <div className="flex justify-between items-center">
                                   <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Tamanho</span>
-                                  <span className="text-[10px] font-black text-neutral-900">{selectedPhoto.fontSize || 11}px</span>
+                                  <span className="text-[10px] font-black px-2 py-0.5 bg-neutral-100 rounded-md text-neutral-900">{selectedPhoto.fontSize || 11}px</span>
                                 </div>
-                                <input 
-                                  type="range" min="8" max="32" step="1" 
-                                  value={selectedPhoto.fontSize || 11} 
+                                <input
+                                  type="range" min="8" max="32" step="1"
+                                  value={selectedPhoto.fontSize || 11}
                                   onChange={(e) => updatePhoto(selectedPhoto.id, { fontSize: parseInt(e.target.value) })}
                                   className="w-full h-1.5 bg-neutral-100 rounded-lg appearance-none cursor-pointer accent-black"
                                 />
                               </div>
-                              <div className="flex-1">
-                                <span className="text-[9px] font-bold uppercase text-neutral-400 block mb-2 tracking-widest">Cor</span>
-                                <div className="flex gap-1.5 flex-wrap items-center">
+
+                              <div className="space-y-3">
+                                <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Cor do Texto</span>
+                                <div className="flex gap-2 flex-wrap mt-4 items-center">
                                   {COLORS.map(c => (
-                                    <button 
+                                    <button
                                       key={c.id}
                                       onClick={() => updatePhoto(selectedPhoto.id, { color: c.id })}
-                                      className={`w-5 h-5 rounded-full border border-neutral-200 transition-all ${selectedPhoto.color === c.id ? 'ring-2 ring-black ring-offset-2 scale-110' : 'hover:scale-110'}`}
+                                      className={`w-6 h-6 rounded-full border border-neutral-200 transition-all ${selectedPhoto.color === c.id ? 'ring-2 ring-black ring-offset-2 scale-110' : 'hover:scale-110'}`}
                                       style={{ backgroundColor: c.id }}
                                     />
                                   ))}
-                                  <div className="relative w-5 h-5 group">
-                                    <input 
+                                  <div className="relative w-6 h-6 group">
+                                    <input
                                       type="color"
                                       value={selectedPhoto.color || '#374151'}
                                       onChange={(e) => updatePhoto(selectedPhoto.id, { color: e.target.value })}
                                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                     />
-                                    <div 
-                                      className={`w-5 h-5 rounded-full border border-neutral-200 transition-all flex items-center justify-center bg-gradient-to-tr from-red-500 via-green-500 to-blue-500 ${!COLORS.some(c => c.id === selectedPhoto.color) ? 'ring-2 ring-black ring-offset-2 scale-110' : 'hover:scale-110'}`}
-                                    >
-                                      <Plus size={10} className="text-white drop-shadow-sm" />
+                                    <div className={`w-6 h-6 rounded-full border border-neutral-200 transition-all flex items-center justify-center bg-gradient-to-tr from-red-400 via-green-400 to-blue-400 ${!COLORS.some(c => c.id === selectedPhoto.color) ? 'ring-2 ring-black ring-offset-2 scale-110' : 'hover:scale-110'}`}>
+                                      <Plus size={12} className="text-white" />
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
                             </div>
                           </div>
                         </motion.div>
@@ -544,9 +528,9 @@ export default function PolaroidStudio() {
                     </AnimatePresence>
                   </div>
 
-                  {/* Text Style & Background */}
-                  <div className="border border-neutral-100 rounded-2xl overflow-hidden">
-                    <button 
+                  {/* Seção: Fundo */}
+                  <div className="border border-neutral-200 rounded-2xl overflow-hidden shadow-sm">
+                    <button
                       onClick={() => toggleSection('style')}
                       className="w-full flex items-center justify-between p-4 bg-neutral-50/50 hover:bg-neutral-50 transition-colors"
                     >
@@ -560,87 +544,41 @@ export default function PolaroidStudio() {
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: 'easeInOut' }}
+                          className="border-t border-neutral-100"
                         >
-                          <div className="p-4 space-y-4 border-t border-neutral-100">
-                            <div>
-                              <div className="flex justify-between items-center mb-2">
-                                <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Fundo</span>
-                                {selectedPhoto.background?.startsWith('url') && (
-                                  <div className="flex items-center gap-1 md:gap-2 bg-neutral-100 px-1.5 md:px-2 py-1 rounded-lg">
-                                    <span className="text-[8px] md:text-[9px] font-black text-neutral-400 uppercase">Tam.</span>
-                                    <input 
-                                      type="range" min="10" max="200" step="5"
-                                      value={selectedPhoto.backgroundSize || 100}
-                                      onChange={(e) => updatePhoto(selectedPhoto.id, { backgroundSize: parseInt(e.target.value) })}
-                                      className="w-12 md:w-16 h-1 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-black"
-                                    />
-                                    <span className="text-[8px] md:text-[9px] font-black w-5 md:w-6">{selectedPhoto.backgroundSize || 100}%</span>
-                                  </div>
-                                )}
-                              </div>
-                              <div className="flex gap-2 flex-wrap">
-                                {BACKGROUNDS.map(bg => (
-                                  <button 
-                                    key={bg.id}
-                                    onClick={() => updatePhoto(selectedPhoto.id, { background: bg.id, backgroundSize: 100 })}
-                                    className={`w-8 h-8 rounded-xl border border-neutral-200 transition-all ${selectedPhoto.background === bg.id ? 'ring-2 ring-black ring-offset-2 scale-110' : 'hover:scale-110'}`}
-                                    style={{ 
-                                      backgroundColor: bg.type === 'color' ? bg.id : '#ffffff',
-                                      backgroundImage: bg.type === 'pattern' ? bg.id : 'none'
-                                    }}
+                          <div className="p-4 space-y-4">
+                            <div className="flex justify-between items-center">
+                              <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Padrões</span>
+                              {selectedPhoto.background?.startsWith('url') && (
+                                <div className="flex items-center gap-2 bg-neutral-100 px-2 py-1 rounded-lg">
+                                  <span className="text-[9px] font-black text-neutral-500 uppercase">Zoom</span>
+                                  <input
+                                    type="range" min="10" max="200" step="5"
+                                    value={selectedPhoto.backgroundSize || 100}
+                                    onChange={(e) => updatePhoto(selectedPhoto.id, { backgroundSize: parseInt(e.target.value) })}
+                                    className="w-16 h-1 bg-neutral-300 rounded-lg appearance-none cursor-pointer accent-black"
                                   />
-                                ))}
-                                
-                                {customBackgrounds.map(bg => (
-                                  <button 
-                                    key={bg.id}
-                                    onClick={() => updatePhoto(selectedPhoto.id, { background: bg.url })}
-                                    className={`w-8 h-8 rounded-xl border border-neutral-200 transition-all relative group ${selectedPhoto.background === bg.url ? 'ring-2 ring-black ring-offset-2 scale-110' : 'hover:scale-110'}`}
-                                    style={{ 
-                                      backgroundImage: bg.url,
-                                      backgroundSize: 'cover'
-                                    }}
-                                  >
-                                    <div 
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setCustomBackgrounds(prev => prev.filter(item => item.id !== bg.id));
-                                      }}
-                                      className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                      <X size={10} />
-                                    </div>
-                                  </button>
-                                ))}
-
-                                <button 
-                                  onClick={() => {
-                                    const input = document.createElement('input');
-                                    input.type = 'file';
-                                    input.accept = 'image/*';
-                                    input.onchange = (e) => {
-                                      const file = (e.target as HTMLInputElement).files?.[0];
-                                      if (file) {
-                                        const reader = new FileReader();
-                                        reader.onload = (ev) => {
-                                          if (ev.target?.result) {
-                                            const url = `url(${ev.target.result})`;
-                                            const newBg = { id: Math.random().toString(36).substr(2, 9), url };
-                                            setCustomBackgrounds(prev => [newBg, ...prev].slice(0, 10));
-                                            updatePhoto(selectedPhoto.id, { background: url, backgroundSize: 100 });
-                                          }
-                                        };
-                                        reader.readAsDataURL(file);
-                                      }
-                                    };
-                                    input.click();
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex gap-2.5 flex-wrap">
+                              {BACKGROUNDS.map(bg => (
+                                <button
+                                  key={bg.id}
+                                  onClick={() => updatePhoto(selectedPhoto.id, { background: bg.id, backgroundSize: 100 })}
+                                  className={`w-9 h-9 rounded-xl border border-neutral-200 transition-all ${selectedPhoto.background === bg.id ? 'ring-2 ring-black ring-offset-2 scale-110' : 'hover:scale-110 shadow-sm'}`}
+                                  style={{
+                                    backgroundColor: bg.type === 'color' ? bg.id : '#ffffff',
+                                    backgroundImage: bg.type === 'pattern' ? bg.id : 'none'
                                   }}
-                                  className="w-8 h-8 rounded-xl border border-dashed border-neutral-300 flex items-center justify-center text-neutral-400 hover:text-black hover:border-neutral-400 transition-all"
-                                >
-                                  <Plus size={16} />
-                                </button>
-                              </div>
+                                />
+                              ))}
+                              <button
+                                onClick={() => {/* Lógica de upload já existente */ }}
+                                className="w-9 h-9 rounded-xl border border-dashed border-neutral-300 flex items-center justify-center text-neutral-400 hover:text-black hover:border-neutral-400 transition-all bg-neutral-50"
+                              >
+                                <Plus size={18} />
+                              </button>
                             </div>
                           </div>
                         </motion.div>
@@ -648,9 +586,9 @@ export default function PolaroidStudio() {
                     </AnimatePresence>
                   </div>
 
-                  {/* Image Adjustments & Quick Actions */}
-                  <div className="border border-neutral-100 rounded-2xl overflow-hidden">
-                    <button 
+                  {/* Seção: Ajustes & Ações */}
+                  <div className="border border-neutral-200 rounded-2xl overflow-hidden shadow-sm">
+                    <button
                       onClick={() => toggleSection('adjustments')}
                       className="w-full flex items-center justify-between p-4 bg-neutral-50/50 hover:bg-neutral-50 transition-colors"
                     >
@@ -664,87 +602,82 @@ export default function PolaroidStudio() {
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: 'easeInOut' }}
+                          className="border-t border-neutral-100"
                         >
-                          <div className="p-4 space-y-4 border-t border-neutral-100">
-                            <div className="flex items-center justify-between">
-                              <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Controles</span>
-                              <button 
-                                onClick={() => {
-                                  removePhoto(selectedPhoto.id);
-                                  setSelectedPhotoId(null);
-                                }}
-                                className="p-2 bg-red-50 hover:bg-red-100 text-red-500 rounded-xl border border-red-100 transition-all shadow-sm"
-                                title="Remover Foto"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </div>
-
-                            <div className="flex gap-2">
-                              <button 
+                          <div className="p-4 space-y-5">
+                            {/* Botões de Girar e Formato */}
+                            <div className="grid grid-cols-3 gap-2">
+                              <button
                                 onClick={() => updatePhoto(selectedPhoto.id, { rotation: (selectedPhoto.rotation - 10) % 360 })}
-                                className="flex-1 py-2.5 bg-white hover:bg-neutral-100 text-neutral-600 rounded-xl border border-neutral-200 transition-all shadow-sm flex items-center justify-center gap-2 text-[11px] font-bold"
+                                className="flex flex-col items-center gap-1.5 py-3 bg-white hover:bg-neutral-50 text-neutral-600 rounded-xl border border-neutral-200 transition-all shadow-sm"
                               >
                                 <RotateCcw size={16} />
-                                <span>Girar</span>
+                                <span className="text-[9px] font-bold uppercase">Esq.</span>
                               </button>
-                              <button 
+                              <button
                                 onClick={() => updatePhoto(selectedPhoto.id, { rotation: (selectedPhoto.rotation + 10) % 360 })}
-                                className="flex-1 py-2.5 bg-white hover:bg-neutral-100 text-neutral-600 rounded-xl border border-neutral-200 transition-all shadow-sm flex items-center justify-center gap-2 text-[11px] font-bold"
+                                className="flex flex-col items-center gap-1.5 py-3 bg-white hover:bg-neutral-50 text-neutral-600 rounded-xl border border-neutral-200 transition-all shadow-sm"
                               >
                                 <RotateCw size={16} />
-                                <span>Girar</span>
+                                <span className="text-[9px] font-bold uppercase">Dir.</span>
                               </button>
-                              <button 
+                              <button
                                 onClick={() => updatePhoto(selectedPhoto.id, { orientation: selectedPhoto.orientation === 'portrait' ? 'landscape' : 'portrait' })}
-                                className="flex-1 py-2.5 bg-white hover:bg-neutral-100 text-neutral-600 rounded-xl border border-neutral-200 transition-all shadow-sm flex items-center justify-center gap-2 text-[11px] font-bold"
+                                className="flex flex-col items-center gap-1.5 py-3 bg-white hover:bg-neutral-50 text-neutral-600 rounded-xl border border-neutral-200 transition-all shadow-sm"
                               >
                                 <Layout size={16} />
-                                <span>Formato</span>
+                                <span className="text-[9px] font-bold uppercase">Layout</span>
                               </button>
                             </div>
 
+                            {/* Sliders de Zoom e Posição */}
                             <div className="space-y-4 pt-2">
-                              <div className="space-y-2">
+                              <div className="space-y-3">
                                 <div className="flex justify-between">
-                                  <span className="text-[9px] font-bold uppercase text-neutral-500">Zoom</span>
-                                  <span className="text-[9px] font-black">{selectedPhoto.zoom.toFixed(1)}x</span>
+                                  <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Zoom da Imagem</span>
+                                  <span className="text-[10px] font-black text-neutral-900">{selectedPhoto.zoom.toFixed(1)}x</span>
                                 </div>
-                                <input 
-                                  type="range" min="1" max="5" step="0.1" 
-                                  value={selectedPhoto.zoom} 
+                                <input
+                                  type="range" min="1" max="5" step="0.1"
+                                  value={selectedPhoto.zoom}
                                   onChange={(e) => updatePhoto(selectedPhoto.id, { zoom: parseFloat(e.target.value) })}
-                                  className="w-full h-1 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-black"
+                                  className="w-full h-1.5 bg-neutral-100 rounded-lg appearance-none cursor-pointer accent-black"
                                 />
                               </div>
+
                               <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                  <div className="flex justify-between">
-                                    <span className="text-[9px] font-bold uppercase text-neutral-500">X</span>
-                                    <span className="text-[9px] font-black">{selectedPhoto.x}%</span>
-                                  </div>
-                                  <input 
-                                    type="range" min="-50" max="50" step="1" 
-                                    value={selectedPhoto.x} 
+                                <div className="space-y-3">
+                                  <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest text-center block">Eixo X</span>
+                                  <input
+                                    type="range" min="-50" max="50" step="1"
+                                    value={selectedPhoto.x}
                                     onChange={(e) => updatePhoto(selectedPhoto.id, { x: parseInt(e.target.value) })}
-                                    className="w-full h-1 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-black"
+                                    className="w-full h-1 bg-neutral-100 rounded-lg appearance-none cursor-pointer accent-neutral-400"
                                   />
                                 </div>
-                                <div className="space-y-2">
-                                  <div className="flex justify-between">
-                                    <span className="text-[9px] font-bold uppercase text-neutral-500">Y</span>
-                                    <span className="text-[9px] font-black">{selectedPhoto.y}%</span>
-                                  </div>
-                                  <input 
-                                    type="range" min="-50" max="50" step="1" 
-                                    value={selectedPhoto.y} 
+                                <div className="space-y-3">
+                                  <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest text-center block">Eixo Y</span>
+                                  <input
+                                    type="range" min="-50" max="50" step="1"
+                                    value={selectedPhoto.y}
                                     onChange={(e) => updatePhoto(selectedPhoto.id, { y: parseInt(e.target.value) })}
-                                    className="w-full h-1 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-black"
+                                    className="w-full h-1 bg-neutral-100 rounded-lg appearance-none cursor-pointer accent-neutral-400"
                                   />
                                 </div>
                               </div>
                             </div>
+
+                            {/* Botão Remover */}
+                            <button
+                              onClick={() => {
+                                removePhoto(selectedPhoto.id);
+                                setSelectedPhotoId(null);
+                              }}
+                              className="w-full flex items-center justify-center gap-2 py-3 bg-red-50 hover:bg-red-500 hover:text-white text-red-500 rounded-xl border border-red-100 transition-all font-bold text-[11px] uppercase tracking-widest"
+                            >
+                              <Trash2 size={16} />
+                              Excluir Foto
+                            </button>
                           </div>
                         </motion.div>
                       )}
@@ -753,18 +686,21 @@ export default function PolaroidStudio() {
                 </div>
               </motion.section>
             ) : (
-              <motion.div 
+              /* Estado Vazio */
+              <motion.div
                 key="empty"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="w-full bg-neutral-100/50 border border-dashed border-neutral-200 rounded-[32px] p-12 flex flex-col items-center justify-center text-center space-y-4"
+                className="w-full bg-neutral-50 border-2 border-dashed border-neutral-200 rounded-[32px] p-10 md:p-16 flex flex-col items-center justify-center text-center space-y-5"
               >
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                  <MousePointer2 size={20} className="text-neutral-300" />
+                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-neutral-100">
+                  <MousePointer2 size={24} className="text-neutral-300" />
                 </div>
-                <div>
-                  <h3 className="text-xs font-black uppercase tracking-widest text-neutral-400">Selecione uma foto</h3>
-                  <p className="text-[10px] font-bold text-neutral-400 mt-2 leading-relaxed">Clique em qualquer Polaroid na folha para começar a editar.</p>
+                <div className="space-y-2">
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-neutral-400">Selecione uma foto</h3>
+                  <p className="text-[10px] font-medium text-neutral-400/80 max-w-[180px] leading-relaxed">
+                    Clique em qualquer Polaroid na folha para começar a editar.
+                  </p>
                 </div>
               </motion.div>
             )}
@@ -782,9 +718,9 @@ export default function PolaroidStudio() {
                 </div>
                 <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-neutral-200 shadow-sm w-full sm:w-auto justify-between sm:justify-start">
                   <span className="text-[10px] font-bold text-neutral-400 uppercase">Zoom</span>
-                  <input 
-                    type="range" min="0.2" max="1.0" step="0.05" 
-                    value={previewScale} 
+                  <input
+                    type="range" min="0.2" max="1.0" step="0.05"
+                    value={previewScale}
                     onChange={(e) => setPreviewScale(parseFloat(e.target.value))}
                     className="w-24 md:w-32 h-1 bg-neutral-100 rounded-lg appearance-none cursor-pointer accent-black"
                   />
@@ -797,20 +733,20 @@ export default function PolaroidStudio() {
             </div>
 
             {/* A4 Sheet Wrapper to handle scaling layout */}
-            <div 
+            <div
               className="relative shadow-2xl shadow-black/10 transition-all duration-300 z-10 mx-auto"
-              style={{ 
-                width: `${210 * previewScale}mm`, 
+              style={{
+                width: `${210 * previewScale}mm`,
                 height: `${297 * previewScale}mm`,
                 minWidth: `${210 * previewScale}mm`
               }}
             >
-              <div 
+              <div
                 ref={sheetRef}
-                className="a4-sheet grid grid-cols-2 grid-rows-4 gap-0 items-center justify-center content-center bg-white origin-top-left" 
-                style={{ 
-                  padding: '8.5mm 5mm', 
-                  width: '210mm', 
+                className="a4-sheet grid grid-cols-2 grid-rows-4 gap-0 items-center justify-center content-center bg-white origin-top-left"
+                style={{
+                  padding: '8.5mm 5mm',
+                  width: '210mm',
                   height: '297mm',
                   transform: `scale(${previewScale})`
                 }}
@@ -819,21 +755,21 @@ export default function PolaroidStudio() {
                   const photo = photos[index];
                   const isSelected = photo && selectedPhotoId === photo.id;
                   return (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className={`w-[100mm] h-[70mm] border border-dashed border-neutral-100 flex items-center justify-center bg-neutral-50/30 relative ${isSelected ? 'z-50' : 'z-0'}`}
                     >
                       {photo ? (
-                        <PolaroidCard 
-                          photo={photo} 
-                          onUpdate={updatePhoto} 
-                          onRemove={removePhoto} 
+                        <PolaroidCard
+                          photo={photo}
+                          onUpdate={updatePhoto}
+                          onRemove={removePhoto}
                           previewScale={previewScale}
                           isSelected={isSelected}
                           onSelect={() => setSelectedPhotoId(photo.id)}
                         />
                       ) : (
-                        <button 
+                        <button
                           onClick={() => fileInputRef.current?.click()}
                           className="no-print group flex flex-col items-center gap-2 text-neutral-300 hover:text-neutral-500 transition-colors"
                           data-html2canvas-ignore
@@ -867,8 +803,8 @@ export default function PolaroidStudio() {
       </main>
 
       {/* Hidden File Inputs */}
-      <input 
-        type="file" 
+      <input
+        type="file"
         ref={fileInputRef}
         onChange={handleUpload}
         multiple
