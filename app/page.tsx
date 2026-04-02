@@ -47,6 +47,9 @@ interface PolaroidPhoto {
   textAlign?: 'left' | 'center' | 'right';
   background?: string;
   backgroundSize?: number;
+  brightness?: number; // Valor de 0 a 200 (100 é o padrão)
+  grayscale?: boolean;
+  sepia?: boolean;
 }
 
 // --- Constants ---
@@ -157,7 +160,8 @@ const PolaroidCard = ({
               className="object-contain transition-all duration-200"
               style={{
                 transform: `rotate(${photo.rotation}deg) scale(${photo.zoom}) translate(${photo.x}%, ${photo.y}%)`,
-                transformOrigin: 'center center'
+                transformOrigin: 'center center',
+                filter: `brightness(${photo.brightness ?? 100}%) ${photo.grayscale ? 'grayscale(100%)' : ''} ${photo.sepia ? 'sepia(100%)' : ''}`
               }}
             />
           </div>
@@ -431,10 +435,10 @@ export default function PolaroidStudio() {
                                   ].map((item) => (
                                     <button
                                       key={item.value}
-                                      onClick={() => updatePhoto(selectedPhoto.id, { textAlign: item.value })}
+                                      onClick={() => updatePhoto(selectedPhoto.id, { textAlign: item.value as 'left' | 'center' | 'right' })}
                                       className={`p-1.5 rounded transition-all ${(selectedPhoto.textAlign === item.value || (item.value === 'center' && !selectedPhoto.textAlign))
-                                          ? 'bg-white shadow-sm text-black'
-                                          : 'text-neutral-400 hover:text-neutral-600'
+                                        ? 'bg-white shadow-sm text-black'
+                                        : 'text-neutral-400 hover:text-neutral-600'
                                         }`}
                                     >
                                       <item.icon size={14} />
@@ -683,6 +687,72 @@ export default function PolaroidStudio() {
                       )}
                     </AnimatePresence>
                   </div>
+                  {/* Seção: Filtros e Efeitos (Dropdown) */}
+                  <div className="border border-neutral-200 rounded-2xl overflow-hidden shadow-sm">
+                    <button
+                      onClick={() => toggleSection('filters')}
+                      className="w-full flex items-center justify-between p-4 bg-neutral-50/50 hover:bg-neutral-50 transition-colors"
+                    >
+                      <span className="text-[10px] font-black uppercase text-neutral-500 tracking-widest">Filtros & Efeitos</span>
+                      <ChevronDown size={16} className={`text-neutral-400 transition-transform duration-300 ${expandedSections.filters ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {expandedSections.filters && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="border-t border-neutral-100"
+                        >
+                          <div className="p-4 space-y-5">
+                            {/* Slider de Brilho */}
+                            <div className="space-y-2">
+                              <div className="flex justify-between items-center">
+                                <label className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Brilho</label>
+                                <span className="text-[10px] font-black">{selectedPhoto.brightness ?? 100}%</span>
+                              </div>
+                              <input
+                                type="range" min="50" max="150" step="1"
+                                value={selectedPhoto.brightness ?? 100}
+                                onChange={(e) => updatePhoto(selectedPhoto.id, { brightness: parseInt(e.target.value) })}
+                                className="w-full h-1.5 bg-neutral-100 rounded-lg appearance-none cursor-pointer accent-black"
+                              />
+                            </div>
+
+                            {/* Menu Dropdown para Filtros de Cor */}
+                            <div className="space-y-2">
+                              <label className="text-[9px] font-bold uppercase text-neutral-400 tracking-widest">Efeito de Cor</label>
+                              <select
+                                value={selectedPhoto.grayscale ? 'grayscale' : selectedPhoto.sepia ? 'sepia' : 'none'}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  updatePhoto(selectedPhoto.id, {
+                                    grayscale: val === 'grayscale',
+                                    sepia: val === 'sepia'
+                                  });
+                                }}
+                                className="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[11px] font-bold outline-none cursor-pointer focus:border-black transition-all"
+                              >
+                                <option value="none">Original (Cores)</option>
+                                <option value="grayscale">Preto e Branco</option>
+                                <option value="sepia">Sépia (Vintage)</option>
+                              </select>
+                            </div>
+
+                            {/* Botão de Reset rápido */}
+                            <button
+                              onClick={() => updatePhoto(selectedPhoto.id, { grayscale: false, sepia: false, brightness: 100 })}
+                              className="w-full flex items-center justify-center gap-2 py-3 bg-red-50 hover:bg-red-500 hover:text-white text-red-500 rounded-xl border border-red-100 transition-all font-bold text-[11px] uppercase tracking-widest"
+                            >
+                              <RotateCcw size={12} /> Resetar Efeitos
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
                 </div>
               </motion.section>
             ) : (
