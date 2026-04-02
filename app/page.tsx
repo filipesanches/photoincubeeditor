@@ -344,7 +344,7 @@ export default function PolaroidStudio() {
     const selected = photos.find(p => p.id === selectedPhotoId);
     if (!selected) return;
     const { fontFamily, fontSize, color, fontWeight, fontStyle, textAlign } = selected;
-    
+
     setPhotos(prev => prev.map(p => ({
       ...p, fontFamily, fontSize, color, fontWeight, fontStyle, textAlign
     })));
@@ -355,7 +355,7 @@ export default function PolaroidStudio() {
     const selected = photos.find(p => p.id === selectedPhotoId);
     if (!selected) return;
     const { background, backgroundSize } = selected;
-    
+
     setPhotos(prev => prev.map(p => ({
       ...p, background, backgroundSize
     })));
@@ -366,9 +366,20 @@ export default function PolaroidStudio() {
     const selected = photos.find(p => p.id === selectedPhotoId);
     if (!selected) return;
     const { brightness, grayscale, sepia } = selected;
-    
+
     setPhotos(prev => prev.map(p => ({
       ...p, brightness, grayscale, sepia
+    })));
+  };
+
+  // 4. Aplica APENAS o texto (conteúdo escrito)
+  const applyTextToAll = () => {
+    const selected = photos.find(p => p.id === selectedPhotoId);
+    if (!selected) return;
+    const { text } = selected;
+
+    setPhotos(prev => prev.map(p => ({
+      ...p, text
     })));
   };
 
@@ -555,6 +566,16 @@ export default function PolaroidStudio() {
                               />
                             </div>
 
+                            {/* Botões Aplicar a Todas (Texto) */}
+                            <div className="border-neutral-100 space-y-2">
+                              <button
+                                onClick={applyTextToAll}
+                                className="w-full flex items-center justify-center gap-2 py-3 bg-neutral-50 hover:bg-neutral-200 hover:text-black text-neutral-700 rounded-xl border border-neutral-100 transition-all font-bold text-[11px] uppercase tracking-widest"
+                              >
+                                <Wand2 size={14} /> Aplicar Texto a Todas
+                              </button>
+                            </div>
+
                             {/* Fonte e Estilo */}
                             <div className="grid grid-cols-1 gap-4">
                               <div className="space-y-2">
@@ -626,7 +647,7 @@ export default function PolaroidStudio() {
                                 </div>
                               </div>
                             </div>
-                            <div className="pt-2 border-t border-neutral-100 mt-4">
+                            <div className="pt-2 border-neutral-100">
                               <button
                                 onClick={applyCaptionStyleToAll}
                                 className="w-full flex items-center justify-center gap-2 py-3 bg-neutral-50 hover:bg-neutral-200 hover:text-black text-neutral-700 rounded-xl border border-neutral-100 transition-all font-bold text-[11px] uppercase tracking-widest"
@@ -721,7 +742,7 @@ export default function PolaroidStudio() {
                             </div>
 
                             {/* Botão Aplicar Fundo a Todas */}
-                            <div className="pt-2 border-t border-neutral-100 mt-4">
+                            <div className="pt-2 border-neutral-100">
                               <button
                                 onClick={applyBackgroundToAll}
                                 className="w-full flex items-center justify-center gap-2 py-3 bg-neutral-50 hover:bg-neutral-200 hover:text-black text-neutral-700 rounded-xl border border-neutral-100 transition-all font-bold text-[11px] uppercase tracking-widest"
@@ -816,7 +837,7 @@ export default function PolaroidStudio() {
                               </div>
                             </div>
 
-                            
+
 
 
                             {/* Botão Remover */}
@@ -897,7 +918,7 @@ export default function PolaroidStudio() {
                             </button>
 
                             {/* Botão Aplicar Filtros a Todas */}
-                            <div className="border-t border-neutral-100">
+                            <div className="border-neutral-100">
                               <button
                                 onClick={applyFiltersToAll}
                                 className="w-full flex items-center justify-center gap-2 py-3 bg-neutral-50 hover:bg-neutral-200 hover:text-black text-neutral-700 rounded-xl border border-neutral-100 transition-all font-bold text-[11px] uppercase tracking-widest"
